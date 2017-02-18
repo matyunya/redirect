@@ -72,7 +72,6 @@ Successful transactions:       23085
 Failed transactions:               0
 Longest transaction:            0.43
 Shortest transaction:           0.00
-```
 
 # Alloc = 4904600
 # TotalAlloc = 287215784
@@ -84,13 +83,7 @@ Shortest transaction:           0.00
 # HeapSys = 8650752
 # HeapIdle = 2080768
 # HeapInuse = 6569984
-# HeapReleased = 0
-# HeapObjects = 25797
-# Stack = 786432 / 786432
-# MSpan = 103200 / 131072
-# MCache = 9600 / 16384
-# BuckHashSys = 1462954
-# NextGC = 7694762
+```
 
 
 redirect_fasthttp с чтением из базы.
@@ -108,7 +101,6 @@ Successful transactions:       45875
 Failed transactions:               0
 Longest transaction:            0.45
 Shortest transaction:           0.00
-```
 
 # runtime.MemStats
 # Alloc = 5420616
@@ -121,13 +113,7 @@ Shortest transaction:           0.00
 # HeapSys = 8552448
 # HeapIdle = 1671168
 # HeapInuse = 6881280
-# HeapReleased = 0
-# HeapObjects = 40934
-# Stack = 884736 / 884736
-# MSpan = 102080 / 131072
-# MCache = 9600 / 16384
-# BuckHashSys = 1455098
-# NextGC = 7407472
+```
 
 Сопоставимая производительность, но гораздо более эффективное потребление памяти. Можно сэкономить еще, отказавшись от ORM, можно положить в память всю таблицу с урлами, если есть существенный оверхед для запросов к бд, и получать обновления через механизм listen/notify.
 
