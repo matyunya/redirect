@@ -1,21 +1,28 @@
 Создаем таблицу в pg.
 
+```sql
 create table redirects (id serial primary key, url character varying, p1 character varying, p2 character varying[], p3 character varying[], p4 character varying[], p5 character varying[], p6 character varying[]);
 create index ps_idx on redirects (p1,p2,p3,p4,p5,p6);
 grant all on redirects to mac;
+```
 
 Наполняем данными.
+
+```sh
 go run insert.go
+```
 
 Тест проводится на MBP 2012, выставляем настройки, чтобы хватило сокетов для обработки параллельных запросов.
+
+```sh
 sudo sysctl -w net.inet.ip.portrange.hifirst=32768
 sudo sysctl -w net.inet.tcp.msl=1000
-
-go run redirect_naive.go
+```
 
 Проводим первый идеальный нагрузочный тест 30 секунд 10 параллельных запросов, который возвращает один и тот же ответ.
 redirect_perfect.
 
+```sh
 siege -c 10 -f urls.txt -t 30S -b
 
 Transactions:              54164 hits
@@ -30,9 +37,11 @@ Successful transactions:           0
 Failed transactions:               0
 Longest transaction:            0.50
 Shortest transaction:           0.00
+```
 
 Добавляем github.com/valyala/fasthttp. Опять без чтения из базы, одинаковый ответ.
 
+```sh
 Transactions:              52558 hits
 Availability:             100.00 %
 Elapsed time:              29.99 secs
@@ -45,10 +54,12 @@ Successful transactions:       23736
 Failed transactions:               0
 Longest transaction:            0.43
 Shortest transaction:           0.00
+```
 
 
 Читаем урлы из бд, без fasthttp. redirect_simple.
 
+```sh
 Transactions:              51102 hits
 Availability:             100.00 %
 Elapsed time:              29.89 secs
@@ -61,6 +72,7 @@ Successful transactions:       23085
 Failed transactions:               0
 Longest transaction:            0.43
 Shortest transaction:           0.00
+```
 
 # Alloc = 4904600
 # TotalAlloc = 287215784
@@ -83,6 +95,7 @@ Shortest transaction:           0.00
 
 redirect_fasthttp с чтением из базы.
 
+```sh
 Transactions:              50785 hits
 Availability:             100.00 %
 Elapsed time:              30.00 secs
@@ -95,6 +108,7 @@ Successful transactions:       45875
 Failed transactions:               0
 Longest transaction:            0.45
 Shortest transaction:           0.00
+```
 
 # runtime.MemStats
 # Alloc = 5420616
@@ -119,6 +133,7 @@ Shortest transaction:           0.00
 
 Еще немного микрооптимизаций в фильнальной верии redirect_fasthttp.go
 
+```sh
 Transactions:              53606 hits
 Availability:             100.00 %
 Elapsed time:              29.95 secs
@@ -131,4 +146,4 @@ Successful transactions:       48276
 Failed transactions:               0
 Longest transaction:            0.66
 Shortest transaction:           0.00
- 
+```
