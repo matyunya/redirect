@@ -21,16 +21,23 @@ var DB *pg.DB
 
 func init() {
 	DB = pg.Connect(&pg.Options{
-		Addr:     "localhost:5432",
-		User:     "mac",
+		Addr:     "localhost:5434",
+		User:     "user",
 		Database: "redirect",
-		Password: os.Getenv("pass"),
+		Password: "123456",
 	})
 
 	pg.SetQueryLogger(log.New(os.Stdout, "", log.LstdFlags))
 }
 
 func main() {
+	if _, err := DB.Query(nil, `create table redirects (id serial primary key, url character varying, p1 character varying, p2 character varying[], p3 character varying[], p4 character varying[], p5 character varying[], p6 character varying[]);`); err != nil {
+		log.Println(err)
+	}
+	if _, err := DB.Query(nil, `create index ps_idx on redirects (p1,p2,p3,p4,p5,p6);`); err != nil {
+		log.Println(err)
+	}
+
 	file, err := os.Open("redirects_fixtures.json")
 	if err != nil {
 		log.Println("Error opening file:", err)
